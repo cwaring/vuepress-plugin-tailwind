@@ -8,20 +8,22 @@ const defaultOptions = {
 
 const plugin = (options = {}, context) => {
     const { themeConfig, siteConfig, cwd, isProd } = context
-    const { config, purgecss } = merge(defaultOptions, options)
+    const { config, purgecss, subDir } = merge(defaultOptions, options)
 
     const plugins = [
         require("tailwindcss")(config),
         require("autoprefixer"),
     ]
 
+    const workingDir = subDir ? `${cwd}/${subDir}` : cwd
+    
     /**
      * Only run purge css in production.
      */
     if (isProd && purgecss.enabled) plugins.push(require("@fullhuman/postcss-purgecss")({
         content: [
-            `${cwd}/.vuepress/theme/**/*.*`,
-            `${cwd}/!(node_modules)/**/*.md`,
+            `${workingDir}/.vuepress/theme/**/*.*`,
+            `${workingDir}/!(node_modules)/**/*.md`,
         ],
 
         extractors: [
